@@ -14,6 +14,7 @@ server.get('*', (req, res) => {
             res.status(500).end('Internal Server Error')
             return
         }
+        res.setHeader('Content-Type', 'text/html;charset=UTF-8')
         res.end(html)
     })
 })
