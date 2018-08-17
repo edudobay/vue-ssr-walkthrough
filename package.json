@@ -4,9 +4,15 @@
   "main": "index.js",
   "author": "Eduardo Dobay <edudobay@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "serve": "nodemon index.js"
+  },
   "dependencies": {
     "express": "^4.16.3",
     "vue": "^2.5.17",
     "vue-server-renderer": "^2.5.17"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
   }
 }
