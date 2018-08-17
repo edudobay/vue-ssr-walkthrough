@@ -1,21 +1,28 @@
 const Vue = require('vue')
+const server = require('express')()
+const renderer = require('vue-server-renderer').createRenderer()
 
-function main() {
-  const app = new Vue({
-    template: `<div>Hello world</div>`
-  })
+server.get('*', (req, res) => {
+    const app = new Vue({
+        data: {
+            url: req.url
+        },
+        template: `<div>The visited URL is: {{ url }}</div>`
+    });
 
-  render(app)
-}
+    renderer.renderToString(app, (err, html) => {
+        if (err) {
+            res.status(500).end('Internal Server Error')
+            return
+        }
+        res.end(`
+<!DOCTYPE html>
+<html lang="en">
+  <head><title>Hello</title></head>
+  <body>${html}</body>
+</html>
+    `)
+    })
+})
 
-function render(app) {
-  const renderer = require('vue-server-renderer').createRenderer()
-
-  renderer.renderToString(app).then(html => {
-    console.log(html)
-  }).catch(err => {
-    console.error(err)
-  })
-}
-
-main()
+server.listen(8080)
