@@ -1,4 +1,8 @@
 {
+  "plugins": [
+    "syntax-dynamic-import",
+    ["transform-object-rest-spread", { "useBuiltIns": true }]
+  ],
   "presets": [
     ["env", { "modules": false }]
   ]

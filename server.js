@@ -17,7 +17,7 @@ const renderer = createBundleRenderer(serverBundle, {
 server.use('/dist', express.static(path.join(__dirname, 'dist')))
 
 server.get('*', (req, res) => {
-    const context = { url: req.url }
+    const context = { url: req.url, query: {...req.query} }
     context.$state = {...context}
 
     renderer.renderToString(context, (err, html) => {
