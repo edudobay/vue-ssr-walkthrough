@@ -10,6 +10,7 @@ server.get('*', (req, res) => {
 
     renderer.renderToString(app, (err, html) => {
         if (err) {
+            console.error(err)
             res.status(500).end('Internal Server Error')
             return
         }
