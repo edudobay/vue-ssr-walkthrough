@@ -1,6 +1,6 @@
-const { createApp } = require('./app')
+import { createApp } from './app'
 
-module.exports = context => {
+export default context => {
   const { app } = createApp(context)
   return app
 }
