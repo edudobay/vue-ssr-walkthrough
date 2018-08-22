@@ -1,8 +1,19 @@
+const path = require('path')
+const express = require('express')
+const server = express()
 const createApp = require('./app')
-const server = require('express')()
-const renderer = require('vue-server-renderer').createRenderer({
-    template: require('fs').readFileSync('./index.template.html', 'utf-8')
+const { createRenderer } = require('vue-server-renderer')
+
+const clientManifest = require('./dist/vue-ssr-client-manifest.json')
+
+const template = require('fs').readFileSync('./index.template.html', 'utf-8')
+
+const renderer = createRenderer({
+  clientManifest,
+  template,
 })
+
+server.use('/dist', express.static(path.join(__dirname, 'dist')))
 
 server.get('*', (req, res) => {
     const context = { url: req.url }

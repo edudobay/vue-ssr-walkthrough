@@ -5,6 +5,8 @@
   "author": "Eduardo Dobay <edudobay@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "assets": "webpack --config webpack.client.config.js --mode development",
+    "assets-watch": "webpack --config webpack.client.config.js --mode development --watch",
     "serve": "nodemon server.js"
   },
   "dependencies": {
@@ -13,6 +15,10 @@
     "vue-server-renderer": "^2.5.17"
   },
   "devDependencies": {
-    "nodemon": "^1.18.3"
+    "nodemon": "^1.18.3",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-merge": "^4.1.4",
+    "webpack-node-externals": "^1.7.2"
   }
 }
