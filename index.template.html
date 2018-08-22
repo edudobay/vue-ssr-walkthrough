@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><title>Hello</title></head>
+<head>
+  <title>Hello</title>
+  {{{ renderResourceHints() }}}
+  {{{ renderStyles() }}}
+</head>
 <body>
 <div id="app"><!--vue-ssr-outlet--></div>
 <script>window.__PRE_STATE__ = {{{ $state }}}</script>
+{{{ renderScripts() }}}
 </body>
 </html>

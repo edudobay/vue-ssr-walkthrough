@@ -13,6 +13,7 @@ const serialize = require('serialize-javascript')
 const renderer = createRenderer({
   clientManifest,
   template,
+  inject: false
 })
 
 server.use('/dist', express.static(path.join(__dirname, 'dist')))
