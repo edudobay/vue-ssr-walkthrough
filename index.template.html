@@ -7,7 +7,7 @@
 </head>
 <body>
 <div id="app"><!--vue-ssr-outlet--></div>
-<script>window.__PRE_STATE__ = {{{ $state }}}</script>
+{{{ renderState({ contextKey: '$state', windowKey: '__PRE_STATE__' }) }}}
 {{{ renderScripts() }}}
 </body>
 </html>

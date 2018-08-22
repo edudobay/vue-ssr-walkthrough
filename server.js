@@ -8,7 +8,6 @@ const { createRenderer } = require('vue-server-renderer')
 const clientManifest = require('./dist/vue-ssr-client-manifest.json')
 
 const template = require('fs').readFileSync('./index.template.html', 'utf-8')
-const serialize = require('serialize-javascript')
 
 const renderer = createRenderer({
   clientManifest,
@@ -21,7 +20,7 @@ server.use('/dist', express.static(path.join(__dirname, 'dist')))
 server.get('*', (req, res) => {
     const context = { url: req.url }
     const app = createApp(context)
-    const templateContext = { $state: serialize(context) }
+    const templateContext = { $state: {...context} }
 
     renderer.renderToString(app, templateContext, (err, html) => {
         if (err) {
