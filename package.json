@@ -7,6 +7,8 @@
   "scripts": {
     "assets": "webpack --config webpack.client.config.js --mode development",
     "assets-watch": "webpack --config webpack.client.config.js --mode development --watch",
+    "server-bundle": "webpack --config webpack.server.config.js --mode development",
+    "server-bundle-watch": "webpack --config webpack.server.config.js --mode development --watch",
     "serve": "nodemon server.js"
   },
   "dependencies": {

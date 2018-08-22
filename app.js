@@ -5,7 +5,7 @@ function createApp(context) {
   const app = new Vue({
     render: h => h(App, { props: context })
   })
-  return app
+  return { app }
 }
 
-module.exports = createApp
+module.exports = { createApp }
