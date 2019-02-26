@@ -31,4 +31,7 @@ server.get('*', (req, res) => {
     })
 })
 
-server.listen(8080)
+const port = Number.parseInt(process.env.PORT) || 8080;
+server.listen(port, () => {
+  console.log(`Listening on port ${port}. Visit me at http://localhost:${port}`);
+});
