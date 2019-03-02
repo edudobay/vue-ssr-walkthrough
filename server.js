@@ -33,7 +33,7 @@ if (devMode) {
   const clientManifest = require('./dist/vue-ssr-client-manifest.json')
   const serverBundle = require(path.join(__dirname, 'dist/vue-ssr-server-bundle.json'))
 
-  renderer = createRenderer(serverBundle, { clientManifest })
+  renderer = createRenderer(serverBundle, { template, clientManifest })
 }
 
 function render(req, res) {
