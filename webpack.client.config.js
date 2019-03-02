@@ -26,9 +26,27 @@ module.exports = merge(baseConfig, {
   optimization: {
     splitChunks: {
       cacheGroups: {
+        // extract vendor chunks for better caching
+        vendors: {
+          name: 'vendor',
+          test(module, chunks) {
+            // a module is extracted into the vendor chunk if...
+            return (
+              // it's inside node_modules
+              /node_modules/.test(module.context) &&
+              // and not a CSS file (due to extract-text-webpack-plugin limitation)
+              !/\.css$/.test(module.request)
+            )
+          },
+          chunks: 'initial',
+          priority: -10,
+        },
+        // extract webpack runtime & manifest to avoid vendor chunk hash changing
+        // on every build.
         commons: {
           name: 'manifest',
-          minChunks: Infinity
+          minChunks: Infinity,
+          priority: -20,
         }
       }
     }
