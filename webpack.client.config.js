@@ -4,7 +4,9 @@ const merge = require('webpack-merge')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 module.exports = merge(baseConfig, {
-  entry: './entry-client.js',
+  entry: {
+    app: './entry-client.js',
+  },
 
   resolve: {
     alias: {
@@ -13,7 +15,11 @@ module.exports = merge(baseConfig, {
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    // strip dev-only code in Vue source
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      'process.env.VUE_ENV': '"client"'
+    }),
     new VueSSRClientPlugin(),
   ],
 

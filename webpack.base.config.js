@@ -3,6 +3,10 @@ const path = require('path')
 const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = {
+  devtool: !devMode
+    ? false
+    : '#cheap-module-source-map',
+
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',

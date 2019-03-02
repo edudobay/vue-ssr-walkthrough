@@ -4,55 +4,65 @@ const express = require('express')
 const server = express()
 
 const { createBundleRenderer } = require('vue-server-renderer')
-const clientManifest = require('./dist/vue-ssr-client-manifest.json')
-const serverBundle = require(path.join(__dirname, 'dist/vue-ssr-server-bundle.json'))
 const template = require('fs').readFileSync('./index.template.html', 'utf-8')
+const resolve = file => path.resolve(__dirname, file)
 
-const renderer = createBundleRenderer(serverBundle, {
-  clientManifest,
-  template,
-  inject: false,
-  runInNewContext: false
-})
-
-if (devMode) {
-  const webpack = require('webpack')
-  const webpackDevMiddleware = require('webpack-dev-middleware')
-  const webpackHotMiddleware = require('webpack-hot-middleware')
-  const webpackDevConfig = require('./webpack.client.config.js')
-
-  const compiler = webpack({
-    ...webpackDevConfig,
-    mode: 'development',
+function createRenderer(bundle, options) {
+  return createBundleRenderer(bundle, {
+    ...options,
+    inject: false,
+    runInNewContext: false,
+    // this is only needed when vue-server-renderer is npm-linked
+    basedir: resolve('./dist'),
   })
-
-  server.use(webpackDevMiddleware(compiler, {
-    publicPath: webpackDevConfig.output.publicPath,
-    noInfo: true,
-    stats: {
-      colors: true
-    }
-  }))
-
-  server.use(webpackHotMiddleware(compiler))
-} else {
-  server.use('/dist', express.static(path.join(__dirname, 'dist')))
 }
 
-server.get('*', (req, res) => {
-    const context = { url: req.url, query: {...req.query} }
-    context.$state = {...context}
+let readyPromise
+let renderer
 
-    renderer.renderToString(context, (err, html) => {
-        if (err) {
-            console.error(err)
-            res.status(500).end('Internal Server Error')
-            return
-        }
-        res.setHeader('Content-Type', 'text/html;charset=UTF-8')
-        res.end(html)
-    })
+if (devMode) {
+  readyPromise = require('./setup-dev-server')(
+    server,
+    template,
+    (bundle, options) => {
+      renderer = createRenderer(bundle, options)
+    }
+  )
+
+} else {
+  const clientManifest = require('./dist/vue-ssr-client-manifest.json')
+  const serverBundle = require(path.join(__dirname, 'dist/vue-ssr-server-bundle.json'))
+
+  renderer = createRenderer(serverBundle, { clientManifest })
+}
+
+function render(req, res) {
+  const context = { url: req.url, query: {...req.query} }
+  context.$state = {...context}
+
+  renderer.renderToString(context, (err, html) => {
+      if (err) {
+          console.error(err)
+          res.status(500).end('Internal Server Error')
+          return
+      }
+      res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+      res.end(html)
+  })
+}
+
+const renderFunction =
+  devMode
+    ? (req, res) => { readyPromise.then(() => render(req, res)) }
+    : render
+
+const serve = (path, cache) => express.static(resolve(path), {
+  maxAge: cache && devMode ? 0 : 1000 * 60 * 60 * 24 * 30,
 })
+
+server.use('/dist', serve('./dist', true))
+
+server.get('*', renderFunction)
 
 const port = Number.parseInt(process.env.PORT) || 8080;
 server.listen(port, () => {
