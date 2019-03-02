@@ -1,3 +1,4 @@
+const { devMode } = require('./env')
 const path = require('path')
 const express = require('express')
 const server = express()
@@ -14,7 +15,29 @@ const renderer = createBundleRenderer(serverBundle, {
   runInNewContext: false
 })
 
-server.use('/dist', express.static(path.join(__dirname, 'dist')))
+if (devMode) {
+  const webpack = require('webpack')
+  const webpackDevMiddleware = require('webpack-dev-middleware')
+  const webpackHotMiddleware = require('webpack-hot-middleware')
+  const webpackDevConfig = require('./webpack.client.config.js')
+
+  const compiler = webpack({
+    ...webpackDevConfig,
+    mode: 'development',
+  })
+
+  server.use(webpackDevMiddleware(compiler, {
+    publicPath: webpackDevConfig.output.publicPath,
+    noInfo: true,
+    stats: {
+      colors: true
+    }
+  }))
+
+  server.use(webpackHotMiddleware(compiler))
+} else {
+  server.use('/dist', express.static(path.join(__dirname, 'dist')))
+}
 
 server.get('*', (req, res) => {
     const context = { url: req.url, query: {...req.query} }

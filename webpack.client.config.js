@@ -1,4 +1,5 @@
 const baseConfig = require('./webpack.base.config.js')
+const webpack = require('webpack')
 const merge = require('webpack-merge')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
@@ -12,7 +13,8 @@ module.exports = merge(baseConfig, {
   },
 
   plugins: [
-    new VueSSRClientPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new VueSSRClientPlugin(),
   ],
 
   optimization: {
