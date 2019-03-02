@@ -9,6 +9,7 @@
     "start": "rm -rf dist/ && webpack --config webpack.client.config.js --mode production && webpack --config webpack.server.config.js --mode production && NODE_ENV=production node server.js"
   },
   "dependencies": {
+    "css-loader": "^2.1.0",
     "express": "^4.16.3",
     "vue": "^2.5.17",
     "vue-server-renderer": "^2.5.17"
